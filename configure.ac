@@ -891,7 +891,7 @@ int main ()
 AC_MSG_RESULT($glib_ssize_type)
 
 # Check for some functions
-AC_CHECK_FUNCS(lstat strsignal vsnprintf stpcpy strcasecmp strncasecmp poll vasprintf setenv unsetenv getc_unlocked readlink symlink fdwalk memmem)
+AC_CHECK_FUNCS(lstat strsignal vsnprintf stpcpy strcasecmp strncasecmp poll ppoll vasprintf setenv unsetenv getc_unlocked readlink symlink fdwalk memmem)
 AC_CHECK_FUNCS(lchmod lchown fchmod fchown utimes getresuid)
 AC_CHECK_FUNCS(getmntent_r setmntent endmntent hasmntopt getfsstat getvfsstat fallocate)
 case $host_os in aix*) ac_cv_func_splice=no ;; esac # AIX splice() is something else

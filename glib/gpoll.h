@@ -117,4 +117,10 @@ g_poll (GPollFD *fds,
 
 G_END_DECLS
 
+gint
+g_ppoll (GPollFD *fds,
+         guint nfds,
+         GTimeSpec *time_spec,
+         const sigset_t *sigmask);
+
 #endif /* __G_POLL_H__ */

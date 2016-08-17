@@ -238,6 +238,22 @@ struct _GSourceFuncs
   GSourceDummyMarshal closure_marshal; /* Really is of type GClosureMarshal */
 };
 
+struct _GSourceTimeSpecFuncs
+{
+  gboolean (*prepare) (GSource *source,
+                       GTimeSpec *time_spec);
+  gboolean (*check) (GSource *source);
+  gboolean (*dispatch) (GSource *source,
+                        GSourceFunc callback,
+                        gpointer user_data);
+  void (*finalize) (GSource *source); /* Can be NULL */
+
+  /*< private >*/
+  /* For use by g_source_set_closure */
+  GSourceFunc closure_callback;        
+  GSourceDummyMarshal closure_marshal; /* Really is of type GClosureMarshal */
+};
+
 /* Standard priorities */
 
 /**
@@ -365,6 +381,14 @@ gint     g_main_context_query    (GMainContext *context,
                                   gint         *timeout_,
                                   GPollFD      *fds,
                                   gint          n_fds);
+
+
+gint g_main_context_query_time_spec (GMainContext *context,
+                                     gint max_priority,
+                                     GTimeSpec *time_spec,
+                                     GPollFD *fds,
+                                     gint n_fds);
+
 GLIB_AVAILABLE_IN_ALL
 gint     g_main_context_check    (GMainContext *context,
                                   gint          max_priority,
@@ -482,6 +506,12 @@ void                 g_source_set_ready_time (GSource        *source,
 GLIB_AVAILABLE_IN_2_36
 gint64               g_source_get_ready_time (GSource        *source);
 
+
+void g_source_set_ready_time_spec (GSource *source,
+                                   GTimeSpec ready_time_spec);
+GTimeSpec* g_source_get_ready_time_spec (GSource *source);
+
+
 #ifdef G_OS_UNIX
 GLIB_AVAILABLE_IN_2_36
 gpointer             g_source_add_unix_fd    (GSource        *source,
@@ -526,6 +556,8 @@ void     g_source_get_current_time (GSource        *source,
 GLIB_AVAILABLE_IN_ALL
 gint64   g_source_get_time         (GSource        *source);
 
+GTimeSpec* g_source_get_time_spec (GSource *source);
+
  /* void g_source_connect_closure (GSource        *source,
                                   GClosure       *closure);
  */
@@ -541,6 +573,8 @@ GSource *g_timeout_source_new     (guint interval);
 GLIB_AVAILABLE_IN_ALL
 GSource *g_timeout_source_new_seconds (guint interval);
 
+GSource *g_timeout_source_new_time_spec (GTimeSpec *time_spec);
+
 /* Miscellaneous functions
  */
 GLIB_AVAILABLE_IN_ALL
@@ -550,6 +584,7 @@ gint64 g_get_monotonic_time               (void);
 GLIB_AVAILABLE_IN_ALL
 gint64 g_get_real_time                    (void);
 
+void g_get_current_time_spec (GTimeSpec *result);
 
 /* Source manipulation by ID */
 GLIB_AVAILABLE_IN_ALL
@@ -581,6 +616,17 @@ GLIB_AVAILABLE_IN_ALL
 guint    g_timeout_add_seconds      (guint           interval,
                                      GSourceFunc     function,
                                      gpointer        data);
+
+guint g_timeout_add_time_spec_full (gint priority,
+                                    GTimeSpec *interval,
+                                    GSourceFunc function,
+                                    gpointer data,
+                                    GDestroyNotify notify);
+guint g_timeout_add_time_spec (GTimeSpec *interval,
+                               GSourceFunc function,
+                               gpointer data);
+
+
 GLIB_AVAILABLE_IN_ALL
 guint    g_child_watch_add_full     (gint            priority,
                                      GPid            pid,

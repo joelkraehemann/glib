@@ -402,3 +402,20 @@ g_poll (GPollFD *fds,
 #endif /* !G_OS_WIN32 */
 
 #endif	/* !HAVE_POLL */
+
+#ifdef HAVE_PPOLL
+
+gint
+g_ppoll (GPollFD *fds,
+         guint nfds,
+         GTimeSpec *time_spec,
+         const sigset_t *sigmask);
+{
+  return ppoll ((struct pollfd *)fds, nfds, time_spec, sigmask);
+}
+
+#else  /* !G_OS_WIN32 */
+
+//TODO:JK: implement me
+
+#endif	/* !HAVE_PPOLL */
